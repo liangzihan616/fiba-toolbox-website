@@ -35,3 +35,4 @@ website/
 - 页面为纯静态 HTML、CSS 和 JavaScript，无构建步骤。
 - 交互包括产品界面切换、移动端导航、滚动入场、指针高光与轻微 3D 倾斜。
 - 已适配桌面、平板和手机尺寸，并支持 `prefers-reduced-motion`。
+- 安装包和便携版可发布到 GitHub Releases；源码可直接下载当前 `main` 分支。
