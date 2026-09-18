@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbfaf6">
+  <meta name="description" content="菲八工具箱是面向 Windows 的本地媒体工具箱，支持 Real-ESRGAN 图片超分、三平台无水印解析，以及视频、音频和 NCM 格式转换。">
+  <title>菲八工具箱 - 本地图片超分与媒体工具箱</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="site-backdrop" aria-hidden="true"></div>
+  <div class="cursor-aura" aria-hidden="true"></div>
+
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12h14m-6-6 6 6-6 6"/>
+    </symbol>
+    <symbol id="i-image" viewBox="0 0 24 24">
+      <rect x="3" y="4" width="18" height="16" rx="2"/>
+      <circle cx="9" cy="10" r="2"/>
+      <path d="m21 15-4.5-4.5L7 20"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24">
+      <path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1"/>
+      <path d="M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/>
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="14" height="14" rx="2"/>
+      <path d="m17 10 4-2v8l-4-2"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+      <path d="m9 12 2 2 4-4"/>
+    </symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24">
+      <rect x="7" y="7" width="10" height="10" rx="2"/>
+      <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/>
+      <path d="M10 10h4v4h-4z"/>
+    </symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24">
+      <path d="m12 2 9 5-9 5-9-5 9-5Z"/>
+      <path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>
+    </symbol>
+    <symbol id="i-audio" viewBox="0 0 24 24">
+      <path d="M9 18V5l10-2v13"/>
+      <circle cx="6" cy="18" r="3"/>
+      <circle cx="16" cy="16" r="3"/>
+    </symbol>
+    <symbol id="i-wand" viewBox="0 0 24 24">
+      <path d="m15 4 5 5L7 22l-5-5L15 4Z"/>
+      <path d="m6 13 5 5M19 2v4M21 4h-4M5 2v3M6.5 3.5h-3"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24">
+      <path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/>
+    </symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <path d="M8 21h8M12 17v4"/>
+    </symbol>
+    <symbol id="i-package" viewBox="0 0 24 24">
+      <path d="m21 8-9-5-9 5 9 5 9-5Z"/>
+      <path d="M3 8v8l9 5 9-5V8M12 13v8"/>
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/>
+      <path d="M14 2v6h6M8 13h8M8 17h6"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="m5 12 4 4L19 6"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 6h16M4 12h16M4 18h16"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18"/>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path d="m6 9 6 6 6-6"/>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24">
+      <rect x="4" y="10" width="16" height="11" rx="2"/>
+      <path d="M8 10V7a4 4 0 0 1 8 0v3M12 15v2"/>
+    </symbol>
+  </svg>
+
+  <header class="site-header" id="top">
+    <div class="nav-shell">
+      <a class="brand" href="#top" aria-label="菲八工具箱首页">
+        <span class="brand-mark">FB</span>
+        <span class="brand-copy">
+          <strong>菲八工具箱</strong>
+          <small>Fiba Toolbox</small>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="主导航">
+        <a href="#features">核心功能</a>
+        <a href="#workflow">工作流</a>
+        <a href="#privacy">隐私</a>
+        <a href="#download">下载</a>
+        <a href="#faq">常见问题</a>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="version-pill">v1.8.6-test</span>
+        <a class="button button-small button-primary desktop-download" href="#download">
+          <svg aria-hidden="true"><use href="#i-download"></use></svg>
+          下载
+        </a>
+        <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="mobile-nav">
+          <svg class="menu-icon" aria-hidden="true"><use href="#i-menu"></use></svg>
+          <svg class="close-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav" aria-label="移动端导航">
+      <a href="#features">核心功能</a>
+      <a href="#workflow">工作流</a>
+      <a href="#privacy">隐私</a>
+      <a href="#download">下载</a>
+      <a href="#faq">常见问题</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-copy">
+        <div class="eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          Windows 10 / 11 x64 · 本地高性能引擎
+        </div>
+        <h1 id="hero-title">菲八工具箱</h1>
+        <p class="hero-promise">把下载、转换、超分放进一个桌面工具箱。</p>
+        <p class="hero-lead">
+          图片超分使用 Real-ESRGAN 在本机显卡推理；无水印解析支持抖音、小红书、快手；
+          媒体工具箱覆盖转换、压缩、音频、GIF、剪切、字幕、合并与短视频超分。
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary button-large" href="#download">
+            <svg aria-hidden="true"><use href="#i-download"></use></svg>
+            立即体验 v1.8.6
+          </a>
+          <a class="button button-secondary button-large" href="#showcase">
+            进入产品界面
+            <svg aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+          </a>
+        </div>
+
+        <dl class="hero-facts" aria-label="产品信息">
+          <div>
+            <dt>约 590 KB</dt>
+            <dd>主程序体积</dd>
+          </div>
+          <div>
+            <dt>100% 本地</dt>
+            <dd>素材不经过第三方解析服务器</dd>
+          </div>
+          <div>
+            <dt>3 个平台</dt>
+            <dd>抖音、小红书、快手</dd>
+          </div>
+          <div>
+            <dt>70.39 MB</dt>
+            <dd>当前测试版安装包</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="container showcase" id="showcase">
+        <div class="showcase-toolbar">
+          <div class="showcase-tabs" role="tablist" aria-label="查看不同工具界面">
+            <button class="showcase-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="showcase-panel" tabindex="0"
+              data-image="image-upscale.png"
+              data-title="菲八工具箱 / 图片超分"
+              data-caption="选择模型、倍率、格式和显存分块，拖入图片或整个文件夹后开始批量超分。"
+              data-alt="菲八工具箱图片超分界面">
+              图片超分
+            </button>
+            <button class="showcase-tab" type="button" role="tab" aria-selected="false" aria-controls="showcase-panel" tabindex="-1"
+              data-image="watermark-parser.png"
+              data-title="菲八工具箱 / 无水印解析"
+              data-caption="粘贴分享文案，选择抖音、小红书或快手，通过本机浏览器获取作品信息和媒体地址。"
+              data-alt="菲八工具箱无水印解析界面">
+              无水印解析
+            </button>
+            <button class="showcase-tab" type="button" role="tab" aria-selected="false" aria-controls="showcase-panel" tabindex="-1"
+              data-image="video-toolbox.png"
+              data-title="菲八工具箱 / 媒体工具"
+              data-caption="视频转换、压缩、音频提取、GIF、剪切、字幕、合并和短视频超分都在同一队列里完成。"
+              data-alt="菲八工具箱视频超分与媒体工具界面">
+              媒体工具
+            </button>
+            <button class="showcase-tab" type="button" role="tab" aria-selected="false" aria-controls="showcase-panel" tabindex="-1"
+              data-image="appearance.png"
+              data-title="菲八工具箱 / 外观设置"
+              data-caption="10 组界面底色和 6 组强调色，选择后实时应用，并在下次启动时恢复。"
+              data-alt="菲八工具箱外观设置界面">
+              外观主题
+            </button>
+          </div>
+          <p class="showcase-caption" id="showcase-caption">
+            选择模型、倍率、格式和显存分块，拖入图片或整个文件夹后开始批量超分。
+          </p>
+        </div>
+
+        <figure class="product-frame spotlight" id="showcase-panel" role="tabpanel" aria-live="polite">
+          <div class="frame-bar" aria-hidden="true">
+            <span class="frame-dot"></span>
+            <span class="frame-dot"></span>
+            <span class="frame-dot"></span>
+            <span class="frame-title" id="frame-title">菲八工具箱 / 图片超分</span>
+            <span class="frame-badge">暖白 / 琥珀</span>
+          </div>
+          <div class="frame-screen">
+            <img id="showcase-image" src="image-upscale.png" alt="菲八工具箱图片超分界面"
+              width="1220" height="760" fetchpriority="high" decoding="async">
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="trust-band" aria-label="产品特点">
+      <div class="container trust-grid">
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#i-cpu"></use></svg>
+          <div><strong>Vulkan 加速</strong><span>NVIDIA、AMD 和核显都能参与推理</span></div>
+        </div>
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#i-shield"></use></svg>
+          <div><strong>本地优先</strong><span>图片与视频不需要上传到云端</span></div>
+        </div>
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#i-package"></use></svg>
+          <div><strong>依赖已内置</strong><span>安装包包含 FFmpeg、ncmdump 和模型</span></div>
+        </div>
+        <div class="trust-item">
+          <svg aria-hidden="true"><use href="#i-layers"></use></svg>
+          <div><strong>任务化队列</strong><span>批量处理、进度、取消和结果定位统一管理</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <header class="section-heading reveal">
+          <p class="kicker">核心功能</p>
+          <h2>三类任务，一套本地流程</h2>
+          <p>不追求把所有工具堆在一起，而是把素材从平台、文件夹到成品的处理链路放在同一套界面里。</p>
+        </header>
+
+        <div class="feature-grid">
+          <article class="feature-block spotlight reveal">
+            <div class="feature-icon">
+              <svg aria-hidden="true"><use href="#i-image"></use></svg>
+            </div>
+            <p class="feature-index">01 / 图片超分</p>
+            <h3>把低清图片交给本机 GPU</h3>
+            <p>内置通用照片、动漫插画和动漫视频帧三类模型，支持 2×、3×、4×、TTA 增强与显存分块。</p>
+            <ul class="check-list">
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>拖入图片或整个文件夹，递归扫描子目录</li>
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>对比视图支持拖动分割线和 1:1 像素检查</li>
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>JPG、PNG、WebP 输入，输出格式可切换</li>
+            </ul>
+          </article>
+
+          <article class="feature-block spotlight reveal">
+            <div class="feature-icon">
+              <svg aria-hidden="true"><use href="#i-link"></use></svg>
+            </div>
+            <p class="feature-index">02 / 无水印解析</p>
+            <h3>让本机浏览器完成平台签名</h3>
+            <p>程序启动 Edge 或 Chrome 打开作品页，通过 CDP 截获页面已经拿到的数据，不依赖第三方解析接口。</p>
+            <ul class="check-list">
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>抖音、小红书、快手分享文案与短链识别</li>
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>视频、图文、封面、作者、文案与互动数据</li>
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>平台登录态保存在本机独立浏览器 Profile</li>
+            </ul>
+          </article>
+
+          <article class="feature-block spotlight reveal">
+            <div class="feature-icon">
+              <svg aria-hidden="true"><use href="#i-video"></use></svg>
+            </div>
+            <p class="feature-index">03 / 媒体工具箱</p>
+            <h3>下载之后，继续把素材做成成品</h3>
+            <p>复用随包 FFmpeg 与 Real-ESRGAN，完成转换、压缩、音频提取、GIF、剪切、字幕、合并和视频超分。</p>
+            <ul class="check-list">
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>MP4、MKV、MOV、AVI、WebM 等常见格式</li>
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>MP3、FLAC、M4A、AAC 与网易云 NCM 转换</li>
+              <li><svg aria-hidden="true"><use href="#i-check"></use></svg>自动检测 NVENC、QSV、AMF，失败时回退 CPU</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="workflow">
+      <div class="container">
+        <header class="section-heading reveal">
+          <p class="kicker">完整工作流</p>
+          <h2>从分享链接到归档文件</h2>
+          <p>菲八工具箱把原本分散在下载器、转码器、播放器和超分软件里的步骤串成一条连续路径。</p>
+        </header>
+
+        <ol class="workflow-list">
+          <li class="workflow-step spotlight reveal">
+            <span class="workflow-number">01</span>
+            <svg aria-hidden="true"><use href="#i-link"></use></svg>
+            <h3>获取素材</h3>
+            <p>粘贴分享文案，解析无水印视频或图文作品，也可以直接拖入本地图片和视频。</p>
+          </li>
+          <li class="workflow-step spotlight reveal">
+            <span class="workflow-number">02</span>
+            <svg aria-hidden="true"><use href="#i-audio"></use></svg>
+            <h3>拆分与整理</h3>
+            <p>提取音频、转换格式、压缩体积，或者把长视频切成需要保留的片段。</p>
+          </li>
+          <li class="workflow-step spotlight reveal">
+            <span class="workflow-number">03</span>
+            <svg aria-hidden="true"><use href="#i-wand"></use></svg>
+            <h3>增强与合成</h3>
+            <p>图片和短视频走 Real-ESRGAN 超分，字幕、音轨与多个视频片段继续在队列中处理。</p>
+          </li>
+          <li class="workflow-step spotlight reveal">
+            <span class="workflow-number">04</span>
+            <svg aria-hidden="true"><use href="#i-folder"></use></svg>
+            <h3>输出归档</h3>
+            <p>结果统一写入指定目录，任务完成后可直接打开文件夹定位成品。</p>
+          </li>
+        </ol>
+
+        <div class="workflow-strip reveal">
+          <span>典型链路</span>
+          <div>
+            <b>分享内容</b>
+            <svg aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+            <b>提取音频 / 转码</b>
+            <svg aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+            <b>短视频超分</b>
+            <svg aria-hidden="true"><use href="#i-arrow-right"></use></svg>
+            <b>归档输出</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section privacy-section" id="privacy">
+      <div class="container privacy-grid">
+        <div class="privacy-copy reveal">
+          <p class="kicker">隐私优先</p>
+          <h2>素材留在这台电脑上</h2>
+          <p>图片超分全程本地推理；平台解析使用本机已安装的 Chromium 内核浏览器。官网和程序都不需要把素材发送到第三方解析服务器。</p>
+          <ul class="privacy-list">
+            <li><svg aria-hidden="true"><use href="#i-lock"></use></svg><span><strong>本地浏览器会话</strong>小红书和快手使用独立持久化 Profile。</span></li>
+            <li><svg aria-hidden="true"><use href="#i-folder"></use></svg><span><strong>输出目录可控</strong>超分和媒体任务都可以单独指定保存位置。</span></li>
+            <li><svg aria-hidden="true"><use href="#i-shield"></use></svg><span><strong>进程完整回收</strong>测试版使用 Job Object 清理浏览器进程树。</span></li>
+          </ul>
+        </div>
+
+        <div class="privacy-console spotlight reveal" aria-label="本地处理状态示例">
+          <div class="console-bar">
+            <span class="console-light"></span>
+            <span>本地处理状态</span>
+            <span class="console-status">ONLINE</span>
+          </div>
+          <div class="console-body">
+            <div class="console-row">
+              <span>图片推理</span>
+              <strong>本机 GPU / Vulkan</strong>
+            </div>
+            <div class="console-row">
+              <span>平台解析</span>
+              <strong>本机 Edge / Chrome</strong>
+            </div>
+            <div class="console-row">
+              <span>格式转换</span>
+              <strong>随包 FFmpeg</strong>
+            </div>
+            <div class="console-row">
+              <span>NCM 解码</span>
+              <strong>随包 ncmdump</strong>
+            </div>
+            <div class="console-path">
+              <span>登录资料</span>
+              <code>%LOCALAPPDATA%\FibaToolbox\browser\</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="download">
+      <div class="container">
+        <header class="section-heading reveal">
+          <p class="kicker">下载</p>
+          <h2>选择适合你的 Windows 版本</h2>
+          <p>当前测试版为 v1.8.6-test。主程序轻量，安装包和便携版已经包含推理模型、FFmpeg 与 ncmdump。</p>
+        </header>
+
+        <div class="release-banner reveal">
+          <div>
+            <span class="release-label">当前测试版</span>
+            <strong>v1.8.6-test</strong>
+          </div>
+          <p>三平台无水印解析、完整视频工具箱、短视频超分与浏览器进程清理。</p>
+          <span class="release-size">安装包 70.39 MB</span>
+        </div>
+
+        <div class="download-grid">
+          <article class="download-option spotlight is-recommended reveal">
+            <div class="download-option-head">
+              <div class="download-icon"><svg aria-hidden="true"><use href="#i-monitor"></use></svg></div>
+              <span class="recommended-badge">推荐</span>
+            </div>
+            <h3>安装包</h3>
+            <p>创建桌面快捷方式和开始菜单项，可从 Windows 的“程序和功能”中卸载。</p>
+            <dl>
+              <div><dt>文件</dt><dd>菲八工具箱_安装包_v1.8.6-test.exe</dd></div>
+              <div><dt>大小</dt><dd>约 70.39 MB</dd></div>
+            </dl>
+            <a class="button button-primary button-full"
+              href="../dist/v1.8.6-test/菲八工具箱_安装包_v1.8.6-test.exe" download>
+              <svg aria-hidden="true"><use href="#i-download"></use></svg>
+              下载安装包
+            </a>
+          </article>
+
+          <article class="download-option spotlight reveal">
+            <div class="download-option-head">
+              <div class="download-icon"><svg aria-hidden="true"><use href="#i-package"></use></svg></div>
+            </div>
+            <h3>便携版</h3>
+            <p>解压到独立目录即可运行，适合放到移动硬盘或在不同电脑之间携带。</p>
+            <dl>
+              <div><dt>文件</dt><dd>菲八工具箱_v1.8.6-test.zip</dd></div>
+              <div><dt>大小</dt><dd>约 79.93 MB</dd></div>
+            </dl>
+            <a class="button button-secondary button-full"
+              href="../dist/v1.8.6-test/菲八工具箱_v1.8.6-test.zip" download>
+              <svg aria-hidden="true"><use href="#i-download"></use></svg>
+              下载便携版
+            </a>
+          </article>
+
+          <article class="download-option spotlight reveal">
+            <div class="download-option-head">
+              <div class="download-icon"><svg aria-hidden="true"><use href="#i-file"></use></svg></div>
+            </div>
+            <h3>源码版</h3>
+            <p>包含原生 C / Win32 源码、编译脚本、测试工具和开发文档，适合审查与二次开发。</p>
+            <dl>
+              <div><dt>文件</dt><dd>菲八工具箱_源码_v1.8.6-test.zip</dd></div>
+              <div><dt>大小</dt><dd>约 0.96 MB</dd></div>
+            </dl>
+            <a class="button button-secondary button-full"
+              href="../dist/v1.8.6-test/菲八工具箱_源码_v1.8.6-test.zip" download>
+              <svg aria-hidden="true"><use href="#i-download"></use></svg>
+              下载源码版
+            </a>
+          </article>
+        </div>
+
+        <p class="download-note">
+          下载链接指向当前 v1.8.6-test 发布产物。安装前请先退出正在运行的旧版本。
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container faq-layout">
+        <header class="section-heading reveal">
+          <p class="kicker">常见问题</p>
+          <h2>开始使用前，先看这几件事</h2>
+          <p>下面是程序当前版本最容易遇到的问题和处理方式。</p>
+        </header>
+
+        <div class="faq-list reveal">
+          <details>
+            <summary>
+              <span>图片会传到网上吗？</span>
+              <svg aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </summary>
+            <p>不会。图片超分使用本机 Vulkan 设备执行 Real-ESRGAN 推理，素材不经过云端服务。</p>
+          </details>
+          <details>
+            <summary>
+              <span>格式转换提示找不到 FFmpeg 怎么办？</span>
+              <svg aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </summary>
+            <p>请确认主程序与 <code>ffmpeg\bin\</code> 位于同一目录。安装包和便携版已经包含完整运行时，不需要单独安装。</p>
+          </details>
+          <details>
+            <summary>
+              <span>小红书为什么要登录？</span>
+              <svg aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </summary>
+            <p>小红书通常要求登录后才能稳定获取作品详情。首次使用请点击“平台登录”，登录态会保存在本机专用浏览器 Profile 中。</p>
+          </details>
+          <details>
+            <summary>
+              <span>为什么解析有时需要十几秒？</span>
+              <svg aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </summary>
+            <p>第一次解析需要启动无头浏览器并等待页面接口返回。小红书和快手会在后续解析中复用热会话，通常会更快。</p>
+          </details>
+          <details>
+            <summary>
+              <span>短视频超分适合多长的视频？</span>
+              <svg aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </summary>
+            <p>当前建议处理 3 分钟以内的视频。4× 超分会显著增加处理时间和临时磁盘占用，请先确认输出目录空间充足。</p>
+          </details>
+          <details>
+            <summary>
+              <span>测试版和稳定版应该选哪个？</span>
+              <svg aria-hidden="true"><use href="#i-chevron"></use></svg>
+            </summary>
+            <p>需要三平台解析和完整视频工具箱时使用 v1.8.6-test；更看重已长期验证的基线时，可以继续使用稳定版 v1.6.8。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container final-cta-inner spotlight reveal">
+        <div>
+          <p class="kicker">本地处理，随时可用</p>
+          <h2>把素材处理留在自己的电脑上</h2>
+          <p>下载 v1.8.6-test，体验从无水印解析到媒体输出的完整流程。</p>
+        </div>
+        <a class="button button-primary button-large" href="#download">
+          <svg aria-hidden="true"><use href="#i-download"></use></svg>
+          前往下载
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <span class="brand-mark">FB</span>
+        <div>
+          <strong>菲八工具箱</strong>
+          <p>Windows 本地媒体处理工具</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="#features">功能</a>
+        <a href="#privacy">隐私</a>
+        <a href="#download">下载</a>
+        <a href="../使用说明.md">使用说明</a>
+        <a href="../开发文档.md">开发文档</a>
+      </div>
+      <p class="footer-note">
+        第三方组件包括 Real-ESRGAN、FFmpeg 与 ncmdump，相关许可证随发布包提供。
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
